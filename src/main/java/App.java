@@ -1,3 +1,5 @@
+import model.UserDTO;
+
 import java.util.Scanner;
 
 public class App {
@@ -17,6 +19,7 @@ public class App {
             switch (number) {
 
                 case 1:
+                    AddUser
             }
         }
     }

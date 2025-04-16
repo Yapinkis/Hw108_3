@@ -13,13 +13,12 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name ="name", nullable = false, length = 255)
+    @Column(name ="name", nullable = false)
     private String name;
-    @Column(name ="email", nullable = false, length = 255, unique = true)
+    @Column(name ="email", nullable = false, unique = true)
     private String email;
     @Column(name ="age", nullable = false)
-    @Min(8) @Max(99)
     private Integer age;
     @Column(name ="created_at", nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 }
