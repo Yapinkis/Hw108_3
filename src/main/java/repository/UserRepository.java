@@ -1,8 +1,12 @@
 package repository;
 
 import model.User;
-import model.UserDTO;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository {
-    void addUser(UserDTO userDTO);
+    void addUser(User user);
+    Optional<List<User>> getAllUsers();
+    User getUserById
 }

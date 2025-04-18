@@ -2,12 +2,14 @@ package model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
 @Entity
+@Builder
 @Table(name = "users")
 public class User {
     @Id

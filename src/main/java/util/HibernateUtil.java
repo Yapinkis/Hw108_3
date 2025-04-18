@@ -9,8 +9,9 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 @Slf4j
-@Data
 public class HibernateUtil {
+    // @Getter мне IDE предлагало сгенерировать геттер-аннотацию для SessionFactory,но он же
+    // вроде генерит только для нестатических полей?
     private static final SessionFactory sessionFactory = buildSessionFactory();
     private static SessionFactory buildSessionFactory() {
         try {
@@ -26,4 +27,8 @@ public class HibernateUtil {
             throw new RuntimeException();
         }
     }
+    public static SessionFactory getSessionFactory() {
+        return sessionFactory;
+    }
+
 }
