@@ -16,6 +16,12 @@ public class Mapper {
                 build();
     }
 
+    public static void toUpdateUser(User user,UserDTO userDTO) {
+        user.setName(Optional.ofNullable(userDTO.getName()).orElse(user.getName()));
+        user.setEmail(Optional.ofNullable(userDTO.getEmail()).orElse(user.getEmail()));
+        user.setAge(Optional.ofNullable(userDTO.getAge()).orElse(user.getAge()));
+    }
+
     public static UserDTO toUserDTO(User user) {
         return UserDTO.builder().name(user.getName()).
                 email(user.getEmail()).
@@ -23,4 +29,5 @@ public class Mapper {
                 createdAt(user.getCreatedAt()).
                 build();
     }
+
 }

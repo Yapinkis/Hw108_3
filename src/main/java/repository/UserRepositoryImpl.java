@@ -19,6 +19,7 @@ public class UserRepositoryImpl implements UserRepository {
             Transaction transaction = session.beginTransaction();
             session.persist(user);
             transaction.commit();
+            //наверное при нынешнем перечне выполняемых операций rollback() добавлять не стоит?
         } catch (RuntimeException e) {
             log.error("Возникла ошибка при работе с базой данных " + e.getMessage());
         } catch (Exception e) {
@@ -39,6 +40,61 @@ public class UserRepositoryImpl implements UserRepository {
         } catch (Exception e) {
             log.error("Возникла непредвиденная ошибка " + e);
             return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<User> getUserByEmail(String email) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            Optional<User> user = session.createQuery("FROM User WHERE email = :email", User.class).
+                    setParameter("email", email).uniqueResultOptional();
+            transaction.commit();
+            return user;
+        } catch (RuntimeException e) {
+            log.error("Возникла ошибка при работе с базой данных " + e.getMessage());
+            return Optional.empty();
+        } catch (Exception e) {
+            log.error("Возникла непредвиденная ошибка " + e);
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public void editUser(UserDTO userDTO, String email) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            User user = session.createQuery("FROM User WHERE email = :email", User.class).
+                    setParameter("email", email).uniqueResult();
+            Mapper.toUpdateUser(user,userDTO);
+            session.merge(user);
+            transaction.commit();
+        } catch (RuntimeException e) {
+            log.error("Возникла ошибка при работе с базой данных " + e.getMessage());
+        } catch (Exception e) {
+            log.error("Возникла непредвиденная ошибка " + e);
+        }
+    }
+
+    @Override
+    public boolean deleteUser(String email) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            User user = session.createQuery("FROM User WHERE email = :email", User.class).
+                    setParameter("email", email).uniqueResult();
+            if (user != null) {
+                session.remove(user);
+                transaction.commit();
+                return true;
+            } else {
+                return false;
+            }
+        } catch (RuntimeException e) {
+            log.error("Возникла ошибка при работе с базой данных " + e.getMessage());
+            return false;
+        } catch (Exception e) {
+            log.error("Возникла непредвиденная ошибка " + e);
+            return false;
         }
     }
 }

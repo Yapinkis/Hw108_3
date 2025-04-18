@@ -36,9 +36,10 @@ public class UserService {
         scanner.nextLine();
 
         UserDTO userDTO = UserDTO.builder().name(name).email(email).age(age).build();;
-        Validator.validateUser(userDTO);
-        User user = Mapper.toUser(userDTO);
-        userRepository.addUser(user);
+        if (Validator.validateUser(userDTO)) {
+            User user = Mapper.toUser(userDTO);
+            userRepository.addUser(user);
+        }
     }
 
     public List<UserDTO> getAllUsers() {
@@ -51,6 +52,35 @@ public class UserService {
         } else {
             log.info("Пользователей в базе данных не обнаружено");
             return Collections.emptyList();
+        }
+    }
+
+    public void updateUser(String email) {
+        Optional<User> optionalUser = userRepository.getUserByEmail(email);
+        if (optionalUser.isPresent()) {
+            System.out.println("Введите параметры которые необходимо изменить с учётом требований валидации");
+            System.out.println("Имя");
+            String newName = scanner.nextLine();
+            System.out.println("Почту");
+            String newEmail = scanner.nextLine();
+            System.out.println("Возраст");
+            Integer newAge = scanner.nextInt();
+            scanner.nextLine();
+            UserDTO userDTO = UserDTO.builder().name(newName).email(newEmail).age(newAge).build();
+            if (Validator.validateUser(userDTO)) {
+                userRepository.editUser(userDTO,email);
+                log.info("Пользователь обновлён");
+            }
+        } else {
+            log.info("Пользователь с указанным email не обнаружен в базе данных");
+        }
+    }
+
+    public void deleteUser(String email) {
+        if (userRepository.deleteUser(email)) {
+            log.info("Пользователь был удалён");
+        } else {
+            log.info("Возникла ошибка при удалении пользователя");
         }
     }
 
